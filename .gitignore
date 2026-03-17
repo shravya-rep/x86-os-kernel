@@ -1,0 +1,14 @@
+# Vim swap files
+*.swp
+*.swo
+
+# Mac OS
+.DS_Store
+
+# Compiled object files
+*.o
+*.a
+
+# Build artifacts
+*.iso
+*.img
