@@ -1,28 +1,69 @@
-This file contains quick instructions for getting Weenix to run on
-Redhat-derived or Debian-derived Linux flavors.  See the documentation in doc/
-for detailed instructions.
+# Weenix — A Unix-like Kernel
 
-1. Download and install dependencies.
+A bootable x86 Unix-like operating system kernel written in C. Built as part of a graduate OS course, implementing the core subsystems of a real operating system from scratch.
 
-   On recent versions of Ubuntu or Debian, you can simply run:
+---
 
-   $ sudo apt-get install git-core gcc gdb qemu genisoimage make python python-argparse cscope xterm bash
+## Components Built
 
-   or on Redhat:
+### Process & Thread Management
+- Kernel thread creation, scheduling, cancellation, and exit
+- Round-robin scheduler with context switching
+- `fork()` — duplicates a process with a cloned address space
+- `exec()` — loads and executes ELF binaries in userspace
+- `waitpid()` / `exit()` — zombie reaping, orphan reparenting, process cleanup
+- Kernel mutexes and condition variables for thread synchronization
 
-   $ sudo yum install git-core gcc gdb qemu genisoimage make python python-argparse cscope xterm bash
+### Virtual Memory
+- Per-process virtual address space (`vmmap`) with memory-mapped regions
+- **Copy-on-write** via shadow objects — forked processes share physical pages until either writes
+- Anonymous page mapping with demand paging
+- Page fault handler
+- Buddy allocator for physical page allocation
+- Slab allocator for efficient kernel object allocation
 
-   (tested on: Ubuntu 10.04, Debian 6, and Amazon Linux 2011.09 -- all on
-    Linux 2.6.32 x86)
+### File System
+- **S5FS** — a simplified Unix file system with inodes, directories, and data blocks
+- **VFS (Virtual File System)** layer — clean abstraction over the concrete file system, supporting `open`, `read`, `write`, `close`, `stat`, `mkdir`, `rmdir`, `link`, `unlink`
+- Per-process file descriptor tables, inherited across `fork`
+- Hard links
 
-2. Compile Weenix:
+### System Call Interface
+- Full syscall dispatcher bridging userspace and kernel
+- Implements: `fork`, `exec`, `exit`, `waitpid`, `read`, `write`, `open`, `close`, `stat`, `mkdir`, `rmdir`, `link`, `unlink`, `getpid`, `mmap`, and more
 
-   $ make
+### Drivers & Hardware Abstraction
+- ATA disk driver (block device)
+- TTY driver with 3 virtual terminals
+- Keyboard input and screen output
+- PCI device enumeration
+- x86 boot: GDT, IDT, APIC initialization
 
-3. Invoke Weenix:
+### Userspace Programs
+- `init` — first userspace process
+- `kshell` — interactive kernel debug shell
+- `sh` — basic Unix shell
+- `ls`, `stat`, `cat`, `wc`, `hd`, `ed` — standard utilities
+- `fork-and-wait`, `spin`, `hello` — process and scheduler test programs
+- `halt` — clean system shutdown
 
-   $ ./weenix -n
+---
 
-   or, to run Weenix under gdb, run:
+## Running
 
-   $ ./weenix -n -d gdb
+Requires a Linux environment (Ubuntu 22.04 recommended).
+
+```bash
+# Install dependencies
+sudo apt-get install gcc gdb make qemu-system-x86 genisoimage xorriso grub-pc-bin python3
+
+# Build
+cd kernel2/kernel1
+make
+
+# Run in QEMU
+./weenix -n
+
+# Run with GDB
+./weenix -n -d gdb
+```
