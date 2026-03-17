@@ -1,6 +1,6 @@
 # Weenix — A Unix-like Kernel
 
-A bootable x86 Unix-like operating system kernel written in C. Built as part of a graduate OS course, implementing the core subsystems of a real operating system from scratch.
+A bootable x86 Unix-like kernel written in C, implementing process scheduling, virtual memory with copy-on-write, a Unix file system, and a complete syscall interface. Runs real user programs in QEMU.
 
 ---
 
