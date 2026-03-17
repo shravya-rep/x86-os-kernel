@@ -58,7 +58,7 @@ Requires a Linux environment (Ubuntu 22.04 recommended).
 sudo apt-get install gcc gdb make qemu-system-x86 genisoimage xorriso grub-pc-bin python3
 
 # Build
-cd kernel2/kernel1
+cd kernel
 make
 
 # Run in QEMU
